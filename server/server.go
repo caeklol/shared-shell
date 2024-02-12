@@ -3,10 +3,12 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"net"
 	"os"
+	"strconv"
 	"time"
 
 	tm "github.com/buger/goterm"
@@ -26,8 +28,18 @@ var render_flag bool = true
 var connections int = 0
 var conn net.Conn = nil
 
+var port = flag.Int("p", 37591, "server port")
+var ip = flag.String("i", "0.0.0.0", "server ip")
+
 func main() {
-	listener, err := net.Listen("tcp", "0.0.0.0:4242")
+	flag.Parse()
+
+	address := *ip + ":" + strconv.Itoa(*port)
+
+	fmt.Println("Listening on: " + address)
+	time.Sleep(time.Second)
+
+	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -108,6 +120,7 @@ func handleDisconnect(conn net.Conn) {
 	logs = append(logs, "[LOG] Client disconnected")
 	render_flag = true
 	connections -= 1
+	conn = nil // -- possible race condition -- [A]
 }
 
 func render() {

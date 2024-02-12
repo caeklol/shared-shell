@@ -26,7 +26,7 @@ var logs []string = []string{}
 var render_flag bool = true
 
 func main() {
-	conn, err := net.Dial("tcp", "0.0.0.0:4242")
+	conn, err := net.Dial("tcp", "0.0.0.0:37951")
 	if err != nil {
 		fmt.Println("Couldn't connect to server!")
 		return
